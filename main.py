@@ -2,7 +2,6 @@ import os
 import sys
 from tkinter import *
 import math
-import time
 
 
 def resource_path(relative_path):
@@ -130,118 +129,19 @@ def provjera_kvadrat(polje, x, y):
 
 	return polje, promjena
 
-def solve_click():
-	fields_dict = {1: a1_txt,
-	               2: b1_txt,
-	               3: c1_txt,
-	               4: d1_txt,
-	               5: e1_txt,
-	               6: f1_txt,
-	               7: g1_txt,
-	               8: h1_txt,
-	               9: i1_txt,
+def solve_click(event=None):
+	global fields
 
-	               10: a2_txt,
-	               11: b2_txt,
-	               12: c2_txt,
-	               13: d2_txt,
-	               14: e2_txt,
-	               15: f2_txt,
-	               16: g2_txt,
-	               17: h2_txt,
-	               18: i2_txt,
-
-	               19: a3_txt,
-	               20: b3_txt,
-	               21: c3_txt,
-	               22: d3_txt,
-	               23: e3_txt,
-	               24: f3_txt,
-	               25: g3_txt,
-	               26: h3_txt,
-	               27: i3_txt,
-
-	               28: a4_txt,
-	               29: b4_txt,
-	               30: c4_txt,
-	               31: d4_txt,
-	               32: e4_txt,
-	               33: f4_txt,
-	               34: g4_txt,
-	               35: h4_txt,
-	               36: i4_txt,
-
-	               37: a5_txt,
-	               38: b5_txt,
-	               39: c5_txt,
-	               40: d5_txt,
-	               41: e5_txt,
-	               42: f5_txt,
-	               43: g5_txt,
-	               44: h5_txt,
-	               45: i5_txt,
-
-	               46: a6_txt,
-	               47: b6_txt,
-	               48: c6_txt,
-	               49: d6_txt,
-	               50: e6_txt,
-	               51: f6_txt,
-	               52: g6_txt,
-	               53: h6_txt,
-	               54: i6_txt,
-
-	               55: a7_txt,
-	               56: b7_txt,
-	               57: c7_txt,
-	               58: d7_txt,
-	               59: e7_txt,
-	               60: f7_txt,
-	               61: g7_txt,
-	               62: h7_txt,
-	               63: i7_txt,
-
-	               64: a8_txt,
-	               65: b8_txt,
-	               66: c8_txt,
-	               67: d8_txt,
-	               68: e8_txt,
-	               69: f8_txt,
-	               70: g8_txt,
-	               71: h8_txt,
-	               72: i8_txt,
-
-	               73: a9_txt,
-	               74: b9_txt,
-	               75: c9_txt,
-	               76: d9_txt,
-	               77: e9_txt,
-	               78: f9_txt,
-	               79: g9_txt,
-	               80: h9_txt,
-	               81: i9_txt}
-
-	"""
 	lista = []
-	for i in range(1, 74, 9):
+	for i in fields:
 		red = []
-		for j in range(9):
-			x = fields_dict[i + j].get()
+		for j in i:
 			try:
-				x = int(x)
-				if 1 <= x <= 9:
-					red.append(x)
-				else:
-					red.append([1, 2, 3, 4, 5, 6, 7, 8, 9])
+				red.append(int(j["text"]))
 			except ValueError:
 				red.append([1, 2, 3, 4, 5, 6, 7, 8, 9])
 		lista.append(red)
 	del red
-	"""
-
-	lista = [[8, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 9, 3, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 2], [[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 9, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 4, [1, 2, 3, 4, 5, 6, 7, 8, 9]], [7, [1, 2, 3, 4, 5, 6, 7, 8, 9], 2, 1, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 9, 6, [1, 2, 3, 4, 5, 6, 7, 8, 9]], [2, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 9, [1, 2, 3, 4, 5, 6, 7, 8, 9]], [[1, 2, 3, 4, 5, 6, 7, 8, 9], 6, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 7, [1, 2, 3, 4, 5, 6, 7, 8, 9]], [[1, 2, 3, 4, 5, 6, 7, 8, 9], 7, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 6, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 5], [[1, 2, 3, 4, 5, 6, 7, 8, 9], 2, 7, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 8, 4, [1, 2, 3, 4, 5, 6, 7, 8, 9], 6], [[1, 2, 3, 4, 5, 6, 7, 8, 9], 3, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 5, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]], [5, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 6, 2, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 8]]
-
-	start_time = time.time()
 
 	promjena = True
 	while promjena:
@@ -270,274 +170,116 @@ def solve_click():
 				except TypeError:
 					pass
 
-	print(time.time() - start_time)
-
 	clear_click()
-	for i in range(81):
-		fields_dict[i + 1].insert(0, str(lista[i // 9][i % 9]))
+	for i in range(9):
+		for j in range(9):
+			fields[i][j].config(text=str(lista[i][j]))
 
-def clear_click():
-	a1_txt.delete(0, END)
-	a2_txt.delete(0, END)
-	a3_txt.delete(0, END)
-	a4_txt.delete(0, END)
-	a5_txt.delete(0, END)
-	a6_txt.delete(0, END)
-	a7_txt.delete(0, END)
-	a8_txt.delete(0, END)
-	a9_txt.delete(0, END)
-	b1_txt.delete(0, END)
-	b2_txt.delete(0, END)
-	b3_txt.delete(0, END)
-	b4_txt.delete(0, END)
-	b5_txt.delete(0, END)
-	b6_txt.delete(0, END)
-	b7_txt.delete(0, END)
-	b8_txt.delete(0, END)
-	b9_txt.delete(0, END)
-	c1_txt.delete(0, END)
-	c2_txt.delete(0, END)
-	c3_txt.delete(0, END)
-	c4_txt.delete(0, END)
-	c5_txt.delete(0, END)
-	c6_txt.delete(0, END)
-	c7_txt.delete(0, END)
-	c8_txt.delete(0, END)
-	c9_txt.delete(0, END)
-	d1_txt.delete(0, END)
-	d2_txt.delete(0, END)
-	d3_txt.delete(0, END)
-	d4_txt.delete(0, END)
-	d5_txt.delete(0, END)
-	d6_txt.delete(0, END)
-	d7_txt.delete(0, END)
-	d8_txt.delete(0, END)
-	d9_txt.delete(0, END)
-	e1_txt.delete(0, END)
-	e2_txt.delete(0, END)
-	e3_txt.delete(0, END)
-	e4_txt.delete(0, END)
-	e5_txt.delete(0, END)
-	e6_txt.delete(0, END)
-	e7_txt.delete(0, END)
-	e8_txt.delete(0, END)
-	e9_txt.delete(0, END)
-	f1_txt.delete(0, END)
-	f2_txt.delete(0, END)
-	f3_txt.delete(0, END)
-	f4_txt.delete(0, END)
-	f5_txt.delete(0, END)
-	f6_txt.delete(0, END)
-	f7_txt.delete(0, END)
-	f8_txt.delete(0, END)
-	f9_txt.delete(0, END)
-	g1_txt.delete(0, END)
-	g2_txt.delete(0, END)
-	g3_txt.delete(0, END)
-	g4_txt.delete(0, END)
-	g5_txt.delete(0, END)
-	g6_txt.delete(0, END)
-	g7_txt.delete(0, END)
-	g8_txt.delete(0, END)
-	g9_txt.delete(0, END)
-	h1_txt.delete(0, END)
-	h2_txt.delete(0, END)
-	h3_txt.delete(0, END)
-	h4_txt.delete(0, END)
-	h5_txt.delete(0, END)
-	h6_txt.delete(0, END)
-	h7_txt.delete(0, END)
-	h8_txt.delete(0, END)
-	h9_txt.delete(0, END)
-	i1_txt.delete(0, END)
-	i2_txt.delete(0, END)
-	i3_txt.delete(0, END)
-	i4_txt.delete(0, END)
-	i5_txt.delete(0, END)
-	i6_txt.delete(0, END)
-	i7_txt.delete(0, END)
-	i8_txt.delete(0, END)
-	i9_txt.delete(0, END)
+def clear_click(event=None):
+	global fields, select_position, select_active
+	for i in fields:
+		for j in i:
+			j.config(text="")
+	fields[select_position[0]][select_position[1]].config(highlightthickness=2)
+	select_active = False
+	select_position = [0, 0]
+
+def field_click(event, i, j):
+	global fields, select_position, select_active
+	if select_active:
+		if [i, j] == select_position:
+			select_active = False
+			fields[i][j].config(highlightthickness=2)
+		else:
+			fields[select_position[0]][select_position[1]].config(highlightthickness=2)
+			fields[i][j].config(highlightthickness=4)
+			select_position = [i, j]
+	else:
+		select_active = True
+		fields[i][j].config(highlightthickness=4)
+		select_position = [i, j]
+
+def arrow_press(event, arrow):
+	global fields, select_position, select_active
+	match arrow:
+		case "left":
+			if select_position[1] != 0:
+				fields[select_position[0]][select_position[1]].config(highlightthickness=2)
+				select_position[1] -= 1
+		case "right":
+			if select_position[1] != 8:
+				fields[select_position[0]][select_position[1]].config(highlightthickness=2)
+				select_position[1] += 1
+		case "up":
+			if select_position[0] != 0:
+				fields[select_position[0]][select_position[1]].config(highlightthickness=2)
+				select_position[0] -= 1
+		case "down":
+			if select_position[0] != 8:
+				fields[select_position[0]][select_position[1]].config(highlightthickness=2)
+				select_position[0] += 1
+	select_active = True
+	fields[select_position[0]][select_position[1]].config(highlightthickness=4)
+
+def num_press(event, num):
+	global fields, select_position, select_active
+	if select_active:
+		if num != 0:
+			fields[select_position[0]][select_position[1]].config(text=str(num))
+		else:
+			fields[select_position[0]][select_position[1]].config(text="")
 
 
 if __name__ == '__main__':
 	root = Tk()
 	root.title("S-Sudoku")
 	root.resizable(False, False)
-	root.geometry("281x450")
+	root.geometry(f"420x515+{root.winfo_screenwidth() // 2 - 210}+{root.winfo_screenheight() // 2 - 257}")
 	root.iconbitmap(resource_path("sudoku-icon.ico"))
+	root.config(background="#9AE6FC")
 
-	name_lbl = Label(root, text="S-Sudoku", font=("Times New Roman Bold", 25))
-	name_lbl.place(width=250, height=50, x=50.5, y=0)
+	title_lbl = Label(root, text="S-Sudoku", font=("Helvetica", 30, "bold", "italic"), foreground="white", activeforeground="white", activebackground="#9AE6FC", background="#9AE6FC", highlightthickness=0, borderwidth=0)
+	title_lbl.place(width=420, height=95, x=0, y=0)
 
-	clr_bt = Button(root, text="Clear", font=("Segoe UI", 9), command=clear_click)
-	clr_bt.place(width=50, height=25, x=25, y=325)
+	clr_bt = Label(root, text="Clear", font=("Helvetica", 15, "bold"), justify="center", anchor="center", background="#5c8a97", activebackground="#5c8a97", foreground="white", activeforeground="white", borderwidth=0, highlightthickness=2, highlightcolor="#0f1719", highlightbackground="#0f1719")
+	clr_bt.place(width=100, height=35, x=40, y=460)
+	clr_bt.bind("<ButtonRelease-1>", clear_click)
+	clr_bt.bind("<Enter>", lambda event: clr_bt.config(highlightthickness=4))
+	clr_bt.bind("<Leave>", lambda event: clr_bt.config(highlightthickness=2))
 
-	slv_bt = Button(root, text="Solve", font=("Segoe UI", 9), command=solve_click)
-	slv_bt.place(width=50, height=25, x=206, y=325)
+	slv_bt = Label(root, text="Solve", font=("Helvetica", 15, "bold"), justify="center", anchor="center", background="#5c8a97", activebackground="#5c8a97", foreground="white", activeforeground="white", borderwidth=0, highlightthickness=2, highlightcolor="#0f1719", highlightbackground="#0f1719")
+	slv_bt.place(width=100, height=35, x=280, y=460)
+	slv_bt.bind("<ButtonRelease-1>", solve_click)
+	slv_bt.bind("<Enter>", lambda event: slv_bt.config(highlightthickness=4))
+	slv_bt.bind("<Leave>", lambda event: slv_bt.config(highlightthickness=2))
 
-	a1_txt = Entry(root, font=("Segoe UI", 9))
-	a1_txt.place(height=21, width=21, x=25, y=75)
-	a2_txt = Entry(root, font=("Segoe UI", 9))
-	a2_txt.place(height=21, width=21, x=25, y=99)
-	a3_txt = Entry(root, font=("Segoe UI", 9))
-	a3_txt.place(height=21, width=21, x=25, y=123)
-	a4_txt = Entry(root, font=("Segoe UI", 9))
-	a4_txt.place(height=21, width=21, x=25, y=156)
-	a5_txt = Entry(root, font=("Segoe UI", 9))
-	a5_txt.place(height=21, width=21, x=25, y=180)
-	a6_txt = Entry(root, font=("Segoe UI", 9))
-	a6_txt.place(height=21, width=21, x=25, y=204)
-	a7_txt = Entry(root, font=("Segoe UI", 9))
-	a7_txt.place(height=21, width=21, x=25, y=237)
-	a8_txt = Entry(root, font=("Segoe UI", 9))
-	a8_txt.place(height=21, width=21, x=25, y=261)
-	a9_txt = Entry(root, font=("Segoe UI", 9))
-	a9_txt.place(height=21, width=21, x=25, y=285)
-	b1_txt = Entry(root, font=("Segoe UI", 9))
-	b1_txt.place(height=21, width=21, x=49, y=75)
-	b2_txt = Entry(root, font=("Segoe UI", 9))
-	b2_txt.place(height=21, width=21, x=49, y=99)
-	b3_txt = Entry(root, font=("Segoe UI", 9))
-	b3_txt.place(height=21, width=21, x=49, y=123)
-	b4_txt = Entry(root, font=("Segoe UI", 9))
-	b4_txt.place(height=21, width=21, x=49, y=156)
-	b5_txt = Entry(root, font=("Segoe UI", 9))
-	b5_txt.place(height=21, width=21, x=49, y=180)
-	b6_txt = Entry(root, font=("Segoe UI", 9))
-	b6_txt.place(height=21, width=21, x=49, y=204)
-	b7_txt = Entry(root, font=("Segoe UI", 9))
-	b7_txt.place(height=21, width=21, x=49, y=237)
-	b8_txt = Entry(root, font=("Segoe UI", 9))
-	b8_txt.place(height=21, width=21, x=49, y=261)
-	b9_txt = Entry(root, font=("Segoe UI", 9))
-	b9_txt.place(height=21, width=21, x=49, y=285)
-	c1_txt = Entry(root, font=("Segoe UI", 9))
-	c1_txt.place(height=21, width=21, x=73, y=75)
-	c2_txt = Entry(root, font=("Segoe UI", 9))
-	c2_txt.place(height=21, width=21, x=73, y=99)
-	c3_txt = Entry(root, font=("Segoe UI", 9))
-	c3_txt.place(height=21, width=21, x=73, y=123)
-	c4_txt = Entry(root, font=("Segoe UI", 9))
-	c4_txt.place(height=21, width=21, x=73, y=156)
-	c5_txt = Entry(root, font=("Segoe UI", 9))
-	c5_txt.place(height=21, width=21, x=73, y=180)
-	c6_txt = Entry(root, font=("Segoe UI", 9))
-	c6_txt.place(height=21, width=21, x=73, y=204)
-	c7_txt = Entry(root, font=("Segoe UI", 9))
-	c7_txt.place(height=21, width=21, x=73, y=237)
-	c8_txt = Entry(root, font=("Segoe UI", 9))
-	c8_txt.place(height=21, width=21, x=73, y=261)
-	c9_txt = Entry(root, font=("Segoe UI", 9))
-	c9_txt.place(height=21, width=21, x=73, y=285)
-	d1_txt = Entry(root, font=("Segoe UI", 9))
-	d1_txt.place(height=21, width=21, x=106, y=75)
-	d2_txt = Entry(root, font=("Segoe UI", 9))
-	d2_txt.place(height=21, width=21, x=106, y=99)
-	d3_txt = Entry(root, font=("Segoe UI", 9))
-	d3_txt.place(height=21, width=21, x=106, y=123)
-	d4_txt = Entry(root, font=("Segoe UI", 9))
-	d4_txt.place(height=21, width=21, x=106, y=156)
-	d5_txt = Entry(root, font=("Segoe UI", 9))
-	d5_txt.place(height=21, width=21, x=106, y=180)
-	d6_txt = Entry(root, font=("Segoe UI", 9))
-	d6_txt.place(height=21, width=21, x=106, y=204)
-	d7_txt = Entry(root, font=("Segoe UI", 9))
-	d7_txt.place(height=21, width=21, x=106, y=237)
-	d8_txt = Entry(root, font=("Segoe UI", 9))
-	d8_txt.place(height=21, width=21, x=106, y=261)
-	d9_txt = Entry(root, font=("Segoe UI", 9))
-	d9_txt.place(height=21, width=21, x=106, y=285)
-	e1_txt = Entry(root, font=("Segoe UI", 9))
-	e1_txt.place(height=21, width=21, x=130, y=75)
-	e2_txt = Entry(root, font=("Segoe UI", 9))
-	e2_txt.place(height=21, width=21, x=130, y=99)
-	e3_txt = Entry(root, font=("Segoe UI", 9))
-	e3_txt.place(height=21, width=21, x=130, y=123)
-	e4_txt = Entry(root, font=("Segoe UI", 9))
-	e4_txt.place(height=21, width=21, x=130, y=156)
-	e5_txt = Entry(root, font=("Segoe UI", 9))
-	e5_txt.place(height=21, width=21, x=130, y=180)
-	e6_txt = Entry(root, font=("Segoe UI", 9))
-	e6_txt.place(height=21, width=21, x=130, y=204)
-	e7_txt = Entry(root, font=("Segoe UI", 9))
-	e7_txt.place(height=21, width=21, x=130, y=237)
-	e8_txt = Entry(root, font=("Segoe UI", 9))
-	e8_txt.place(height=21, width=21, x=130, y=261)
-	e9_txt = Entry(root, font=("Segoe UI", 9))
-	e9_txt.place(height=21, width=21, x=130, y=285)
-	f1_txt = Entry(root, font=("Segoe UI", 9))
-	f1_txt.place(height=21, width=21, x=154, y=75)
-	f2_txt = Entry(root, font=("Segoe UI", 9))
-	f2_txt.place(height=21, width=21, x=154, y=99)
-	f3_txt = Entry(root, font=("Segoe UI", 9))
-	f3_txt.place(height=21, width=21, x=154, y=123)
-	f4_txt = Entry(root, font=("Segoe UI", 9))
-	f4_txt.place(height=21, width=21, x=154, y=156)
-	f5_txt = Entry(root, font=("Segoe UI", 9))
-	f5_txt.place(height=21, width=21, x=154, y=180)
-	f6_txt = Entry(root, font=("Segoe UI", 9))
-	f6_txt.place(height=21, width=21, x=154, y=204)
-	f7_txt = Entry(root, font=("Segoe UI", 9))
-	f7_txt.place(height=21, width=21, x=154, y=237)
-	f8_txt = Entry(root, font=("Segoe UI", 9))
-	f8_txt.place(height=21, width=21, x=154, y=261)
-	f9_txt = Entry(root, font=("Segoe UI", 9))
-	f9_txt.place(height=21, width=21, x=154, y=285)
-	g1_txt = Entry(root, font=("Segoe UI", 9))
-	g1_txt.place(height=21, width=21, x=187, y=75)
-	g2_txt = Entry(root, font=("Segoe UI", 9))
-	g2_txt.place(height=21, width=21, x=187, y=99)
-	g3_txt = Entry(root, font=("Segoe UI", 9))
-	g3_txt.place(height=21, width=21, x=187, y=123)
-	g4_txt = Entry(root, font=("Segoe UI", 9))
-	g4_txt.place(height=21, width=21, x=187, y=156)
-	g5_txt = Entry(root, font=("Segoe UI", 9))
-	g5_txt.place(height=21, width=21, x=187, y=180)
-	g6_txt = Entry(root, font=("Segoe UI", 9))
-	g6_txt.place(height=21, width=21, x=187, y=204)
-	g7_txt = Entry(root, font=("Segoe UI", 9))
-	g7_txt.place(height=21, width=21, x=187, y=237)
-	g8_txt = Entry(root, font=("Segoe UI", 9))
-	g8_txt.place(height=21, width=21, x=187, y=261)
-	g9_txt = Entry(root, font=("Segoe UI", 9))
-	g9_txt.place(height=21, width=21, x=187, y=285)
-	h1_txt = Entry(root, font=("Segoe UI", 9))
-	h1_txt.place(height=21, width=21, x=211, y=75)
-	h2_txt = Entry(root, font=("Segoe UI", 9))
-	h2_txt.place(height=21, width=21, x=211, y=99)
-	h3_txt = Entry(root, font=("Segoe UI", 9))
-	h3_txt.place(height=21, width=21, x=211, y=123)
-	h4_txt = Entry(root, font=("Segoe UI", 9))
-	h4_txt.place(height=21, width=21, x=211, y=156)
-	h5_txt = Entry(root, font=("Segoe UI", 9))
-	h5_txt.place(height=21, width=21, x=211, y=180)
-	h6_txt = Entry(root, font=("Segoe UI", 9))
-	h6_txt.place(height=21, width=21, x=211, y=204)
-	h7_txt = Entry(root, font=("Segoe UI", 9))
-	h7_txt.place(height=21, width=21, x=211, y=237)
-	h8_txt = Entry(root, font=("Segoe UI", 9))
-	h8_txt.place(height=21, width=21, x=211, y=261)
-	h9_txt = Entry(root, font=("Segoe UI", 9))
-	h9_txt.place(height=21, width=21, x=211, y=285)
-	i1_txt = Entry(root, font=("Segoe UI", 9))
-	i1_txt.place(height=21, width=21, x=235, y=75)
-	i2_txt = Entry(root, font=("Segoe UI", 9))
-	i2_txt.place(height=21, width=21, x=235, y=99)
-	i3_txt = Entry(root, font=("Segoe UI", 9))
-	i3_txt.place(height=21, width=21, x=235, y=123)
-	i4_txt = Entry(root, font=("Segoe UI", 9))
-	i4_txt.place(height=21, width=21, x=235, y=156)
-	i5_txt = Entry(root, font=("Segoe UI", 9))
-	i5_txt.place(height=21, width=21, x=235, y=180)
-	i6_txt = Entry(root, font=("Segoe UI", 9))
-	i6_txt.place(height=21, width=21, x=235, y=204)
-	i7_txt = Entry(root, font=("Segoe UI", 9))
-	i7_txt.place(height=21, width=21, x=235, y=237)
-	i8_txt = Entry(root, font=("Segoe UI", 9))
-	i8_txt.place(height=21, width=21, x=235, y=261)
-	i9_txt = Entry(root, font=("Segoe UI", 9))
-	i9_txt.place(height=21, width=21, x=235, y=285)
+	fields = []
+	for i in range(9):
+		red = []
+		for j in range(9):
+			red.append(Label(root, cursor="tcross", text="", font=("Helvetica", 18), justify="center", anchor="center", background="#7bb8c9", activebackground="#7bb8c9", foreground="white", activeforeground="white", borderwidth=0, highlightthickness=2, highlightcolor="#2e454b", highlightbackground="#2e454b"))
+			red[-1].place(height=30, width=30, x=(40 + (j * 35) + ((j // 3) * 15)), y=(100 + (i * 35) + ((i // 3) * 15)))
+			red[-1].bind("<ButtonRelease-1>", lambda event, i=i, j=j: field_click(event, i, j))
+		fields.append(red)
+	select_position = [0, 0]
+	select_active = False
+
+	root.bind("<KeyPress-Left>", lambda event: arrow_press(event, "left"))
+	root.bind("<KeyPress-Right>", lambda event: arrow_press(event, "right"))
+	root.bind("<KeyPress-Up>", lambda event: arrow_press(event, "up"))
+	root.bind("<KeyPress-Down>", lambda event: arrow_press(event, "down"))
+
+	root.bind("<KeyRelease-1>", lambda event: num_press(event, 1))
+	root.bind("<KeyRelease-2>", lambda event: num_press(event, 2))
+	root.bind("<KeyRelease-3>", lambda event: num_press(event, 3))
+	root.bind("<KeyRelease-4>", lambda event: num_press(event, 4))
+	root.bind("<KeyRelease-5>", lambda event: num_press(event, 5))
+	root.bind("<KeyRelease-6>", lambda event: num_press(event, 6))
+	root.bind("<KeyRelease-7>", lambda event: num_press(event, 7))
+	root.bind("<KeyRelease-8>", lambda event: num_press(event, 8))
+	root.bind("<KeyRelease-9>", lambda event: num_press(event, 9))
+	root.bind("<KeyRelease-Delete>", lambda event: num_press(event, 0))
+	root.bind("<KeyRelease-BackSpace>", lambda event: num_press(event, 0))
 
 	root.mainloop()
 	sys.exit()
