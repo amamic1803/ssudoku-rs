@@ -129,6 +129,49 @@ def provjera_kvadrat(polje, x, y):
 
 	return polje, promjena
 
+def provjera_parovi_redovi(polje):
+	promjena = False
+	for z in range(9):
+		red = polje[z]
+		red_dict = {}
+		for i in range(len(red)):
+			if type(red[i]) == list:
+				for j in red[i]:
+					if j in red_dict.keys():
+						red_dict[j][0] += 1
+						red_dict[j][1].append(i)
+					else:
+						red_dict[j] = [1, [i]]
+		possible_pair_digits = []
+		for i in red_dict.keys():
+			if red_dict[i][0] == 2:
+				possible_pair_digits.append(i)
+		do_break = False
+		for i in possible_pair_digits:
+			for j in possible_pair_digits:
+				if i != j:
+					broj_istih_pozicija = 0
+					iste_pozicije = []
+					for x in red_dict[i][1]:
+						if x in red_dict[j][1]:
+							broj_istih_pozicija += 1
+							iste_pozicije.append(x)
+					if broj_istih_pozicija == 2:
+						pair = [i, j]
+						do_break = True
+						break
+			if do_break:
+				break
+		if do_break:
+			if polje[z][iste_pozicije[0]] != pair:
+				promjena = True
+				polje[z][iste_pozicije[0]] = pair
+			if polje[z][iste_pozicije[1]] != pair:
+				promjena = True
+				polje[z][iste_pozicije[1]] = pair
+
+	return polje, promjena
+
 def solve_click(event=None):
 	global fields
 
@@ -143,37 +186,59 @@ def solve_click(event=None):
 		lista.append(red)
 	del red
 
+	# lista_easy = [[8, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 9, 3, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 2], [[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 9, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 4, [1, 2, 3, 4, 5, 6, 7, 8, 9]], [7, [1, 2, 3, 4, 5, 6, 7, 8, 9], 2, 1, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 9, 6, [1, 2, 3, 4, 5, 6, 7, 8, 9]], [2, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 9, [1, 2, 3, 4, 5, 6, 7, 8, 9]], [[1, 2, 3, 4, 5, 6, 7, 8, 9], 6, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 7, [1, 2, 3, 4, 5, 6, 7, 8, 9]], [[1, 2, 3, 4, 5, 6, 7, 8, 9], 7, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 6, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 5], [[1, 2, 3, 4, 5, 6, 7, 8, 9], 2, 7, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 8, 4, [1, 2, 3, 4, 5, 6, 7, 8, 9], 6], [[1, 2, 3, 4, 5, 6, 7, 8, 9], 3, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 5, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]], [5, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 6, 2, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 8]]
+	# lista_medium
+	# lista_hard = [[[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 6, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]], [[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 7, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 8, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 2], [[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 1, 7, [1, 2, 3, 4, 5, 6, 7, 8, 9], 9, 4, [1, 2, 3, 4, 5, 6, 7, 8, 9]], [[1, 2, 3, 4, 5, 6, 7, 8, 9], 3, 2, [1, 2, 3, 4, 5, 6, 7, 8, 9], 9, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 1, [1, 2, 3, 4, 5, 6, 7, 8, 9]], [6, [1, 2, 3, 4, 5, 6, 7, 8, 9], 4, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 5, [1, 2, 3, 4, 5, 6, 7, 8, 9], 7], [[1, 2, 3, 4, 5, 6, 7, 8, 9], 1, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 5, [1, 2, 3, 4, 5, 6, 7, 8, 9], 2, 9, [1, 2, 3, 4, 5, 6, 7, 8, 9]], [[1, 2, 3, 4, 5, 6, 7, 8, 9], 8, 9, [1, 2, 3, 4, 5, 6, 7, 8, 9], 2, 3, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]], [3, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 4, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 7, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]], [[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], 1, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]]]
+
 	promjena = True
 	while promjena:
+		print(lista)
 		promjena = False
 
-		for i in range(len(lista)):
-			for j in range(len(lista[i])):
-				try:
-					len(lista[i][j])
+		# scanning
+		promjena_scanning = True
+		while promjena_scanning:
+			promjena_scanning = False
+			for i in range(len(lista)):
+				for j in range(len(lista[i])):
+					try:
+						len(lista[i][j])
 
-					red = provjera_red(lista, i, j)
-					if red[1]:
-						lista = red[0]
-						promjena = True
+						red = provjera_red(lista, i, j)
+						if red[1]:
+							lista = red[0]
+							promjena = True
+							promjena_scanning = True
 
-					stupac = provjera_stupac(lista, i, j)
-					if stupac[1]:
-						lista = stupac[0]
-						promjena = True
+						stupac = provjera_stupac(lista, i, j)
+						if stupac[1]:
+							lista = stupac[0]
+							promjena = True
+							promjena_scanning = True
 
-					kvadrat = provjera_kvadrat(lista, i, j)
-					if kvadrat[1]:
-						lista = kvadrat[0]
-						promjena = True
+						kvadrat = provjera_kvadrat(lista, i, j)
+						if kvadrat[1]:
+							lista = kvadrat[0]
+							promjena = True
+							promjena_scanning = True
 
-				except TypeError:
-					pass
+					except TypeError:
+						pass
+
+		print(lista)
+		# pairs
+		parovi_redovi = provjera_parovi_redovi(lista)
+		if parovi_redovi[1]:
+			lista = parovi_redovi[0]
+			promjena = True
+
+		# x wing
 
 	clear_click()
 	for i in range(9):
 		for j in range(9):
-			fields[i][j].config(text=str(lista[i][j]))
+			if type(lista[i][j]) == int:
+				fields[i][j].config(text=str(lista[i][j]))
 
 def clear_click(event=None):
 	global fields, select_position, select_active
@@ -269,17 +334,17 @@ if __name__ == '__main__':
 	root.bind("<KeyPress-Up>", lambda event: arrow_press(event, "up"))
 	root.bind("<KeyPress-Down>", lambda event: arrow_press(event, "down"))
 
-	root.bind("<KeyRelease-1>", lambda event: num_press(event, 1))
-	root.bind("<KeyRelease-2>", lambda event: num_press(event, 2))
-	root.bind("<KeyRelease-3>", lambda event: num_press(event, 3))
-	root.bind("<KeyRelease-4>", lambda event: num_press(event, 4))
-	root.bind("<KeyRelease-5>", lambda event: num_press(event, 5))
-	root.bind("<KeyRelease-6>", lambda event: num_press(event, 6))
-	root.bind("<KeyRelease-7>", lambda event: num_press(event, 7))
-	root.bind("<KeyRelease-8>", lambda event: num_press(event, 8))
-	root.bind("<KeyRelease-9>", lambda event: num_press(event, 9))
-	root.bind("<KeyRelease-Delete>", lambda event: num_press(event, 0))
-	root.bind("<KeyRelease-BackSpace>", lambda event: num_press(event, 0))
+	root.bind("<KeyPress-1>", lambda event: num_press(event, 1))
+	root.bind("<KeyPress-2>", lambda event: num_press(event, 2))
+	root.bind("<KeyPress-3>", lambda event: num_press(event, 3))
+	root.bind("<KeyPress-4>", lambda event: num_press(event, 4))
+	root.bind("<KeyPress-5>", lambda event: num_press(event, 5))
+	root.bind("<KeyPress-6>", lambda event: num_press(event, 6))
+	root.bind("<KeyPress-7>", lambda event: num_press(event, 7))
+	root.bind("<KeyPress-8>", lambda event: num_press(event, 8))
+	root.bind("<KeyPress-9>", lambda event: num_press(event, 9))
+	root.bind("<KeyPress-Delete>", lambda event: num_press(event, 0))
+	root.bind("<KeyPress-BackSpace>", lambda event: num_press(event, 0))
 
 	root.mainloop()
 	sys.exit()
