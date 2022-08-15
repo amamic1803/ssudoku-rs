@@ -1,0 +1,2 @@
+Generate executable:
+pyinstaller "main.py" --upx-dir "__UPX_PATH__" --noconsole --icon "sudoku-icon.ico" --onefile --add-data "sudoku-icon.ico;." --clean --key "__KEY__" --name "S-Sudoku_v1.0.0"
