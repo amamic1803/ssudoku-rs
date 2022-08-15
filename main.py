@@ -15,7 +15,7 @@ def resource_path(relative_path):
 	return os.path.join(base_path, relative_path)
 
 def solve_click(event=None):
-	global fields
+	global fields, select_position
 
 	lista = []
 	for i in fields:
@@ -30,7 +30,8 @@ def solve_click(event=None):
 
 	solution = solve_sudoku(lista)
 
-	# return codes: 0 - invalid entry | 1 - valid solution | 2 - invalid solution
+	# return codes: 0 - invalid entry | 1 - valid solution | 2 - invalid solution | 3 - already solved
+	fields[select_position[0]][select_position[1]].config(highlightthickness=2)
 	match solution[0]:
 		case 0:
 			showerror(title="Error", message="Invalid entry!", parent=root)
@@ -43,6 +44,8 @@ def solve_click(event=None):
 			showinfo(title="Success", message="Solved!", parent=root)
 		case 2:
 			showerror(title="Fail", message="Can't find a unique solution for a given Sudoku!", parent=root)
+		case 3:
+			showinfo(title="Info", message="Already solved!", parent=root)
 
 def clear_click(event=None):
 	global fields, select_position, select_active
