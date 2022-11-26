@@ -2,7 +2,8 @@ import os
 import sys
 from tkinter import *
 from tkinter.messagebox import showinfo, showerror
-from solver import solve_sudoku
+
+from lib.solver import solve_sudoku
 
 
 def resource_path(relative_path):
@@ -101,13 +102,15 @@ def num_press(event, num):
 		else:
 			fields[select_position[0]][select_position[1]].config(text="")
 
+def main():
+	global root
+	global fields, select_position, select_active
 
-if __name__ == '__main__':
 	root = Tk()
 	root.title("S-Sudoku")
 	root.resizable(False, False)
 	root.geometry(f"420x515+{root.winfo_screenwidth() // 2 - 210}+{root.winfo_screenheight() // 2 - 257}")
-	root.iconbitmap(resource_path("sudoku-icon.ico"))
+	root.iconbitmap(resource_path("data/sudoku-icon.ico"))
 	root.config(background="#9AE6FC")
 
 	title_lbl = Label(root, text="S-Sudoku", font=("Helvetica", 30, "bold", "italic"), foreground="white", activeforeground="white", activebackground="#9AE6FC", background="#9AE6FC", highlightthickness=0, borderwidth=0)
@@ -155,3 +158,7 @@ if __name__ == '__main__':
 
 	root.mainloop()
 	sys.exit()
+
+
+if __name__ == '__main__':
+	main()
