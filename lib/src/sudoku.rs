@@ -1,11 +1,9 @@
 use std::borrow::Borrow;
-use std::fmt::{write, Display, Formatter};
-use std::iter;
-use crate::error::Error;
+use std::fmt::{write, Debug, Display, Formatter};
+use std::iter::{Enumerate, FilterMap};
+use crate::error::CellError;
 
-
-
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub struct Sudoku {
     cells: [[Cell; 9]; 9],
 }
@@ -41,39 +39,47 @@ impl Sudoku {
         Ok(Self { cells: cells_grid })
     }
 }
+impl Debug for Sudoku {
+    
+}
 impl Default for Sudoku {
     fn default() -> Self {
         Self::new()
     }
 }
-
-/// A cell in a Sudoku grid.
-/// It stores a value between 1 and 9, or possible values if the exact value is not known.
-/// [Cell] is always valid since no methods allow for removal of all possible values
-/// (1 must always be possible, known).
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
-pub struct Cell {
-    possible_values: u16,
+impl Display for Sudoku {
+    
 }
-impl Cell {
-    /// Create a new cell with an unknown value (all values 1 to 9 are possible).
+
+/// A generic cell in a generic Sudoku grid.
+/// It stores a value between 1 and N,
+/// or a list of possible values if the exact value is unknown.
+/// It is always valid since no methods allow for removal of every possible value.
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+pub struct Cell<const N: usize = 9> {
+    possible_values: [bool; N],
+    possible_values_count: usize,
+}
+impl<const N: usize> Cell<N> {
+    /// Create a new cell with an unknown value (all values possible).
     /// # Returns
     /// A new cell with all values possible.
     pub fn new() -> Self {
         Cell {
-            possible_values: 0b0000001111111110,
+            possible_values: [true; N],
+            possible_values_count: N,
         }
     }
 
     /// Create a new cell with a known value.
     /// # Arguments
-    /// * `value` - The known value.
+    /// * `value` - The known value of the cell.
     /// # Returns
-    /// * `Ok(cell)` if the value is valid.
-    /// * `Err(error)` if the value is invalid.
+    /// * `Ok(cell)` If the value is valid.
+    /// * `Err(error)` If the value is invalid.
     /// # Errors
-    /// * [Error::InvalidValue] if the value is not between 1 and 9.
-    pub fn new_with_value(value: u8) -> Result<Self, Error> {
+    /// * [CellError::ValueOutOfRange] If the value is not between 1 and N.
+    pub fn new_with_value(value: usize) -> Result<Self, CellError> {
         let mut cell = Cell::new();
         cell.set_value(value)?;
         Ok(cell)
@@ -81,78 +87,80 @@ impl Cell {
 
     /// Get the value of the cell.
     /// # Returns
-    /// * `Some(value)` if the value is known (equivalent to only one value being possible).
-    /// * `None` if the value is unknown.
-    pub fn value(&self) -> Option<u8> {
-        match self.possible_values {
-            0b0000000000000010 => Some(1),
-            0b0000000000000100 => Some(2),
-            0b0000000000001000 => Some(3),
-            0b0000000000010000 => Some(4),
-            0b0000000000100000 => Some(5),
-            0b0000000001000000 => Some(6),
-            0b0000000010000000 => Some(7),
-            0b0000000100000000 => Some(8),
-            0b0000001000000000 => Some(9),
-            _ => None,
+    /// * `Some(value)` If the value is known.
+    /// * `None` If the value is unknown (more than one possible value).
+    pub fn get_value(&self) -> Option<usize> {
+        if self.possible_values_count == 1 {
+            for i in 0..N {
+                if self.possible_values[i] {
+                    return Some(i + 1);
+                }
+            }
         }
+        None
     }
 
-    /// Set the cell to a known value.
+    /// Set the value of the cell to a known value.
     /// # Arguments
     /// * `value` - The value to set.
     /// # Returns
-    /// * `Ok(changed)` if the value is valid and set successfully
-    /// (`true` if the cell's value changed, `false` if it didn't).
-    /// * `Err(error)` if the value is invalid.
+    /// * `Ok(changed)` If the value is valid.
+    /// `true` if the cell's value changed, `false` if it didn't.
+    /// * `Err(error)` If the value is invalid.
     /// # Errors
-    /// * [Error::InvalidValue] if the value is not between 1 and 9.
-    pub fn set_value(&mut self, value: u8) -> Result<bool, Error> {
-        if value < 1 || value > 9 {
-            Err(Error::InvalidValue)
+    /// * [CellError::ValueOutOfRange] If the value is not between 1 and N.
+    pub fn set_value(&mut self, value: usize) -> Result<bool, CellError> {
+        if value < 1 || value > N {
+            Err(CellError::ValueOutOfRange)
         } else {
-            let prev_poss_val = self.possible_values;
-            self.possible_values = 1 << value;
-            Ok(prev_poss_val != self.possible_values)
+            let mut changed = self.possible_values[value - 1] == false;
+            if changed {
+                self.possible_values.fill(false);
+                self.possible_values[value - 1] = true;
+                self.possible_values_count = 1;
+            } else {
+                for i in 0..N {
+                    if i != value - 1 && self.possible_values[i] {
+                        self.possible_values[i] = false;
+                        changed = true;
+                        self.possible_values_count -= 1;
+                        if self.possible_values_count == 1 {
+                            break;
+                        }
+                    }
+                }
+            }
+            Ok(changed)
         }
     }
 
-    /// Get the iterator of possible values for the cell.
-    /// It always starts with the smallest possible value.
-    /// Note that this function always returns a valid iterator because,
-    /// even in cases when the value is known,
-    /// it will return an iterator with one value.
-    /// If you need to get the number of possible values, use [Self::possible_values_count()] instead of
-    /// counting the number of elements in this iterator (more efficient).
+    /// Get the ascending iterator of possible values for the cell.
+    /// If the value is known, it will return an iterator with one value.
+    /// If you need to get the number of possible values, use
+    /// [Self::possible_values_count()] instead (more efficient).
     /// # Returns
-    /// An iterator over the possible values for the cell.
-    pub fn possible_values(&self) -> impl Iterator<Item=u8> {
-        let mut possible_values = self.possible_values;
-        iter::from_fn(move || {
-            if possible_values == 0 {
-                None
-            } else {
-                let trail_zeros = possible_values.trailing_zeros() as u8;
-                possible_values &= !(1 << trail_zeros);
-                Some(trail_zeros)
-            }
-        })
+    /// An ascending iterator of possible values for the cell.
+    pub fn get_possible_values(&self) -> impl Iterator<Item=usize> {
+        self.possible_values
+            .iter()
+            .enumerate()
+            .filter_map(|(i, v)| if *v {Some(i + 1)} else {None})
     }
 
     /// Set the possible values for the cell.
     /// # Arguments
-    /// * `possible_values` - The possible values to set.
+    /// * `possible_values` - The values to set.
     /// # Returns
-    /// * `Ok(changed)` if the possible values are set successfully
-    /// (`true` if the cell's value changed, `false` if it didn't).
-    /// * `Err(error)` if the value is invalid.
+    /// * `Ok(changed)` If the possible values are valid.
+    /// `true` if the cell's possible values changed, `false` if they didn't.
+    /// * `Err(error)` If the value is invalid.
     /// # Errors
-    /// * [Error::InvalidValue] if any value is not between 1 and 9.
-    /// * [Error::NoPossibleValues] if there are no possible values to set.
-    pub fn set_possible_values<T, U>(&mut self, possible_values: T) -> Result<bool, Error> 
+    /// * [CellError::ValueOutOfRange] If any value is not between 1 and N.
+    /// * [CellError::NoPossibleValues] If there are no values to set.
+    pub fn set_possible_values<T, U>(&mut self, possible_values: T) -> Result<bool, CellError>
     where
         T: IntoIterator<Item=U>,
-        U: Borrow<u8>,
+        U: Borrow<usize>,
     {
         let mut new_possible_values = 0;
         for value in possible_values.into_iter().map(|value| *value.borrow()) {
@@ -172,36 +180,56 @@ impl Cell {
     /// Get the number of possible values for the cell.
     /// If the value is known, it will return 1.
     /// Since the cell can't be empty (must have at least one possible value),
-    /// this always returns a value between 1 and 9.
+    /// this always returns a value between 1 and N.
     /// # Returns
     /// The number of possible values for the cell.
-    pub fn possible_values_count(&self) -> u8 {
-        self.possible_values.count_ones() as u8
+    pub fn get_possible_values_count(&self) -> usize {
+        self.possible_values_count
+    }
+
+    /// Check whether the value of the cell is known.
+    /// # Returns
+    /// * `true` if the value is known (only one possible value).
+    /// * `false` if the value is unknown (more than one possible value).
+    pub fn is_value_known(&self) -> bool {
+        self.possible_values_count == 1
     }
 
     /// Check whether a value is possible for the cell.
     /// # Arguments
     /// * `value` - The value to check.
     /// # Returns
-    /// `true` if the value is possible, `false` otherwise.
-    pub fn is_value_possible(&self, value: u8) -> bool {
-        self.possible_values & (1 << value) != 0
+    /// * `Ok(true)` if the value is possible.
+    /// * `Ok(false)` if the value is not possible.
+    /// * `Err(error)` if the value is invalid.
+    /// # Errors
+    /// * [CellError::ValueOutOfRange] if the value is not between 1 and N.
+    pub fn is_value_possible(&self, value: usize) -> Result<bool, CellError> {
+        if value < 1 || value > N {
+            return Err(CellError::ValueOutOfRange);
+        }
+        Ok(self.possible_values[value - 1])
     }
 
     /// Add a possible value to the cell.
     /// # Arguments
     /// * `value` - The value to add.
     /// # Returns
-    /// * `Ok(())` if the value was added successfully.
+    /// * `Ok(false)` if the value was added successfully,
+    /// but the value was already possible before adding
+    /// * `Ok(true)` if the value was added successfully and the value was not possible before adding.
     /// * `Err(error)` if the value is invalid.
     /// # Errors
-    /// * [Error::InvalidValue] if the value is not between 1 and 9.
-    pub fn add_possible_value(&mut self, value: u8) -> Result<(), Error> {
+    /// * [CellError::ValueOutOfRange] if the value is not between 1 and N.
+    pub fn add_possible_value(&mut self, value: usize) -> Result<bool, CellError> {
         if value < 1 || value > 9 {
-            Err(Error::InvalidValue)
+            Err(CellError::ValueOutOfRange)
         } else {
-            self.possible_values |= 1 << value;
-            Ok(())
+            if self.possible_values[value - 1] {
+                return Ok(false);
+            }
+            self.possible_values[value - 1] = true;
+            Ok(true)
         }
     }
 
@@ -209,32 +237,33 @@ impl Cell {
     /// # Arguments
     /// * `value` - The value to remove.
     /// # Returns
-    /// * `Ok(known)` if the value is removed successfully
-    /// (`true` if the value of the cell is now known, `false` otherwise).
+    /// * `Ok(true)` if the value was removed successfully and the value was possible before removing
+    /// * `Ok(false)` if the value was already not possible before removing
     /// * `Err(error)` if the value is invalid.
     /// # Errors
-    /// * [Error::InvalidValue] if the value is not between 1 and 9.
-    pub fn remove_possible_value(&mut self, value: u8) -> Result<bool, Error> {
-        if value < 1 || value > 9 {
-            Err(Error::InvalidValue)
+    /// * [CellError::ValueOutOfRange] if the value is not between 1 and N.
+    pub fn remove_possible_value(&mut self, value: usize) -> Result<bool, CellError> {
+        if value < 1 || value > N {
+            Err(CellError::ValueOutOfRange)
+        } else if self.possible_values[value - 1] {
+            self.possible_values[value - 1] = false;
+            self.possible_values_count -= 1;
+            if self.possible_values_count == 0 {
+                return Err(CellError::NoPossibleValues);
+            }
+            Ok(true)
         } else {
-            self.possible_values &= !(1 << value);
-            Ok(self.possible_values_count() == 1)
+            Ok(false)
         }
     }
 }
-impl Default for Cell {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-impl Display for Cell {
+impl Debug for Cell {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "Cell{{")?;
-        match self.value() {
+        match self.get_value() {
             Some(value) => write!(f, "{}", value)?,
             None => {
-                let mut possible_values = self.possible_values();
+                let mut possible_values = self.get_possible_values();
                 if let Some(value) = possible_values.next() {
                     write!(f, "{}", value)?;
                 }
@@ -244,5 +273,35 @@ impl Display for Cell {
             }
         }
         write!(f, "}}")
+    }
+}
+impl Default for Cell {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl<const N: usize> Display for Cell<N> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let digits = N.ilog10() as usize + 1;
+        match self.get_value() {
+            Some(value) => write!(f, "{:>width$}", value, width=digits),
+            None => write!(f, "{:>width$}", '.', width=digits),
+        }
+    }
+}
+impl<const N: usize> IntoIterator for Cell<N> {
+    type Item = usize;
+    type IntoIter = FilterMap<Enumerate<std::array::IntoIter<bool, N>>, fn((usize, bool)) -> Option<usize>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.possible_values
+            .into_iter()
+            .enumerate()
+            .filter_map(|(i, v)| if v {Some(i + 1)} else {None})
+    }
+}
+impl FromIterator<usize> for Result<Cell,CellError> {
+    fn from_iter<T: IntoIterator<Item=usize>>(iter: T) -> Self {
+        todo!()
     }
 }

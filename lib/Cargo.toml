@@ -3,5 +3,10 @@ name = "ssudoku"
 version = "0.1.0"
 edition = "2024"
 
+[profile.release]
+lto = true
+
+[profile.test]
+opt-level = 3
+
 [dependencies]
-arrayvec = { version="0.7.4", default-features=false }
